@@ -31,7 +31,7 @@ private:
     QSerialPort* serial; // The serial port
     QString portName;    // The name of the serial port
     QByteArray datas;    // The data buffer
-    QList<QPair<QString,QString>> numberAndAddress;
+    QList<QPair<QString,QPair<QString,QString>>> numberAndAddress;
 };
 
 #endif // MYCOMPORT_H

@@ -70,13 +70,20 @@ void MyComPort::ReadData(){
     //qDebug() << "New data available: " << serial.bytesAvailable();
 
     this->datas += serial->readAll();
+    qDebug() << "In readData!!!!";
+    if(this->datas.contains('\n')){
+        while(this->datas.contains('\n')){
 
-    if(this->datas.back() == '\n'){
+            qDebug() << "check";
 
-        qDebug() << this->datas;
-        qDebug() << "check";
-        this->ProcessData(this->datas);
-        this->datas.clear();
+            int num = this->datas.indexOf('\n');
+            QByteArray sentence = this->datas.mid(0,num);
+            this->ProcessData(sentence);
+
+            qDebug() <<sentence;
+            this->datas = this->datas.mid(num+1,this->datas.length()-num);
+            qDebug() << this->datas;
+        }
     }
 
 
@@ -95,13 +102,15 @@ void MyComPort::PortError(QSerialPort::SerialPortError error){
 
 void MyComPort::ProcessData(QByteArray data){
 
-    QString q_data = QString(data);
+     QString q_data = QString(data);
     QRegExp regexp(" public ");
 
     QPair<QString,QString> tempNumAndAdd;
-
+    QPair<QString, QPair<QString,QString>> device;
+    bool deviceExists = false;
     QString address = "";
     int i = 0;
+    int deviceCounter = 0;
     int firstBracket = 0;
     int copyNumber = 8; // The word "public" with 2 whitespaces is 8 long
 
@@ -113,24 +122,50 @@ void MyComPort::ProcessData(QByteArray data){
 
         if(q_data[firstBracket+3] == "]"){
             tempNumAndAdd.first = q_data.mid(firstBracket+1,2);
-            i = q_data.indexOf(regexp);
-            qDebug() << "Found!!!!!";
-            if(i != -1){
-                // Get the address
-                while(i+copyNumber < q_data.length()){
 
-                    if(q_data[i+copyNumber] == " " || q_data[i+copyNumber] == "\r"){
-                        break;
-
-                    }
-                    address.append(q_data[i+copyNumber]);
-                    copyNumber++;
+            QPair<QString, QPair<QString,QString>> checkName;
+            foreach (checkName, this->numberAndAddress){
+                if(QString::compare(tempNumAndAdd.first, checkName.second.first) == 0){
+                    deviceExists = true;
+                    break;
                 }
-                tempNumAndAdd.second = address;
+                deviceCounter++;
             }
-            this->numberAndAddress.append(tempNumAndAdd);
-             qDebug() << this->numberAndAddress.first().first;
-             qDebug() << this->numberAndAddress.first().second;
+
+
+
+            if(!deviceExists){
+                deviceCounter = 0; // reset device counter because no device was found
+
+                i = q_data.indexOf(regexp);
+                qDebug() << "Found!!!!!";
+                if(i != -1){
+                    // Get the address
+                    while(i+copyNumber < q_data.length()){
+
+                        if(q_data[i+copyNumber] == " " || q_data[i+copyNumber] == "\r"){
+                            break;
+
+                        }
+                        address.append(q_data[i+copyNumber]);
+                        copyNumber++;
+                    }
+                    tempNumAndAdd.second = address;
+                }
+                device.second = tempNumAndAdd;
+                this->numberAndAddress.append(device);
+            }
+            else{ // adding the firmware number
+                    int firmWareStartPos = q_data.indexOf("(");
+                    int firmWareEndPos = q_data.indexOf(")");
+                    this->numberAndAddress[deviceCounter].first = q_data.mid(firmWareStartPos+1,firmWareEndPos - firmWareStartPos-1);
+                     qDebug() << "Showing device!!!!!!!!!!!!!!!!!!!!!!!!!!!";
+                    qDebug() << this->numberAndAddress[deviceCounter].first;
+                    qDebug() << this->numberAndAddress[deviceCounter].second.first;
+                    qDebug() << this->numberAndAddress[deviceCounter].second.second;
+            }
+
+
         }
     }
 
