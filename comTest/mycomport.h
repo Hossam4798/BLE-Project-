@@ -24,8 +24,8 @@ public:
 private:
     void ProcessData(QByteArray data);
 
-private slots:
-    void temp();
+//private slots:
+//    void temp();
 
 private:
     QSerialPort* serial; // The serial port

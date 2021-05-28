@@ -44,16 +44,16 @@ void MyComPort::OpenSerialPort()
         qDebug() << "Error with comport";
     }
 
-    QTimer::singleShot(6000, this, SLOT(temp()));
+//    QTimer::singleShot(6000, this, SLOT(temp()));
 
 }
 
-void MyComPort::temp(){
+//void MyComPort::temp(){
 
-    //const char *a = "\r\n scan start \r\n";
-    QString mes = "scan start";
-    this->WriteData(mes);
-}
+//    //const char *a = "\r\n scan start \r\n";
+//    QString mes = "scan start";
+//    this->WriteData(mes);
+//}
 
 void MyComPort::WriteData(QString message)
 {
