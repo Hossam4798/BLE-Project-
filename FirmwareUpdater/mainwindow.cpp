@@ -1,17 +1,24 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+/*
+    The first windows shown to the user after starting the application
+*/
+
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
+    //Initializing
     popup = new popUp();
     style = new Styling();
-//    QPushButton* start = ui->startButton;
+
+    //Used styling buttons
     style->changeButton( ui->startButton);
-//    mainComportWindow = new MainComportWindow();
+
     timer = new QTimer();
     connect(timer,&QTimer::timeout,this,&MainWindow::changeWindow);
 
@@ -21,6 +28,7 @@ MainWindow::MainWindow(QWidget *parent)
         ui->comboBox->setCurrentIndex(1);
     }
 
+    //Coloring error text
     QPalette palette = ui->errorLbl->palette();
     palette.setColor(ui->errorLbl->foregroundRole(), Qt::red);
     ui->errorLbl->setPalette(palette);
@@ -40,7 +48,6 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-//This function checks if the second window is already open
 void MainWindow::changeWindow(){
 
     if(popup->isVisible()){
@@ -67,18 +74,13 @@ void MainWindow::on_startButton_clicked()
             popup->setComport(ui->comboBox->currentText());
             popup->setFilePath(filePath);
             popup->show();
-//            popup->cliProgrammer();
             qDebug() << getComPort();
         }
-//    mainComportWindow->setSelection(ui->comboBox->currentText());
-//    mainComportWindow->show();
 }
-
 
 void MainWindow::on_SelectFileButton_clicked()
 {
     filePath=QFileDialog::getOpenFileName(this, "Find your .img file");
-    qDebug() << filePath;
 }
 
 QString MainWindow::getFilePath(){

@@ -11,12 +11,17 @@
 #include <windows.h> // for Sleep
 #endif
 
+/*
+    This is the window used for connecting to and updating a device
+*/
+
 MainComportWindow::MainComportWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainComportWindow)
 {
     ui->setupUi(this);
 
+    //Initializing errorPopUp
     errorpopup = new errorPopUp();
 
     //Make an empty table
@@ -79,18 +84,20 @@ void MainComportWindow::setTable(){
     qDebug() << "Size of data is " << this->serialport.numberAndAddress.length();
 }
 
+
+//Scans for Bluetooth devices
 void MainComportWindow::on_ScanButton_clicked()
 {
     serialport.Scan();
-//    QTimer::singleShot(6000, this, SLOT(Scan));
 }
 
-
+//Fills the table with the found devices
 void MainComportWindow::on_RefreshButton_clicked()
 {
     setTable();
 }
 
+//Connecting to clicked device
 void MainComportWindow::on_ConnectButton_clicked()
 {
     QList<QTableWidgetItem*> selectedItem  = ui->table->selectedItems();
@@ -104,6 +111,12 @@ void MainComportWindow::on_ConnectButton_clicked()
     }
 }
 
+//For updating the device connected to
+void MainComportWindow::on_UpdateButton_clicked()
+{
+    serialport.Update();
+}
+
 void MainComportWindow::changeWindow(){
     if(errorpopup->isVisible()){
         errorpopup->hide();
@@ -112,11 +125,5 @@ void MainComportWindow::changeWindow(){
         this->hide();
         errorpopup->show();
     }
-}
-
-
-void MainComportWindow::on_UpdateButton_clicked()
-{
-    serialport.Update();
 }
 

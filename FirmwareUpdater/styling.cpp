@@ -1,5 +1,9 @@
 #include "styling.h"
 
+/*
+    This function is used for styling buttons.
+*/
+
 Styling::Styling()
 {
 

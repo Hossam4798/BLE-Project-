@@ -7,6 +7,7 @@ popUp::popUp(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    //Initializing
     errorpopup = new errorPopUp();
     mainComportWindow = new MainComportWindow();
     timer = new QTimer();
@@ -35,27 +36,22 @@ void popUp::setFilePath(QString fp){
     FilePath = fp;
 }
 
+//Function to open the CLI programmer found in file path of the application
 void popUp::cliProgrammer(){
 
     QProcess CommandPrompt;
     QStringList Arguments;
     QString path = QFileInfo(".").absolutePath();
     path.append("/FirmwareUpdater/programmer/cli_programmer.exe");
-    qDebug() << path;
 
+    //Setting arguments which are needed for the CLI programmer
     Arguments << this->COMM << "write_qspi" << "0x300000" << this->FilePath;
-//    CommandPrompt.start("C:\\Users\\hossa\\OneDrive\\Documenten\\QTprograms\\FirmwareUpdater\\programmer\\cli_programmer.exe",Arguments);
     CommandPrompt.start(path ,Arguments);
 
-    bool val = CommandPrompt.waitForFinished();
-    /*while(!CommandPrompt.atEnd()){
-        qDebug() << CommandPrompt.readAllStandardOutput();
-    }*/
-    qDebug() << val;
+    CommandPrompt.waitForFinished();
     QByteArray text = CommandPrompt.readAllStandardOutput();
-    qDebug() << text.contains("done.");
-    qDebug() << text;
 
+    //Check if button was pressed in time
     if(text.contains("done.")){
         errorpopup->changeText("Reset device one last time");
         mainComportWindow->show();

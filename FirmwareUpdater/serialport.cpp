@@ -1,5 +1,9 @@
 #include "serialport.h"
 
+/*
+    Class used for serialPort connection
+*/
+
 SerialPort::SerialPort()
 {
     serial = new QSerialPort(this);
@@ -51,7 +55,6 @@ void SerialPort::WriteData(QString message){
 
 void SerialPort::ReadData(){
     //this is called when readyRead() is emitted
-    //qDebug() << "New data available: " << serial.bytesAvailable();
 
     this->datas += serial->readAll();
     qDebug() << this->datas;
@@ -86,7 +89,7 @@ void SerialPort::Update(){
     this->WriteData(data);
 }
 
-//STILL HAS SO NUMBER HAS TO BE SELECTED
+//Connect to selected device
 void SerialPort::ConnectDevice(QString version){
     QString data = "connect ";
     data.append(version);
@@ -125,8 +128,6 @@ void SerialPort::ProcessData(QByteArray data){
                 }
                 deviceCounter++;
             }
-
-
 
             if(!deviceExists){
                 deviceCounter = 0; // reset device counter because no device was found

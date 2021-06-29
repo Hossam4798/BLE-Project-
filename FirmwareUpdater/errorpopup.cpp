@@ -1,12 +1,17 @@
 #include "errorpopup.h"
 #include "ui_errorpopup.h"
 
+/*
+    Used for feedback rediricted to user of the application.
+*/
+
 errorPopUp::errorPopUp(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::errorPopUp)
 {
     ui->setupUi(this);
 
+    //Text color
     QPalette palette = ui->label->palette();
     palette.setColor(ui->label->foregroundRole(), Qt::red);
     ui->label->setPalette(palette);
@@ -26,6 +31,7 @@ errorPopUp::~errorPopUp()
     delete ui;
 }
 
+//Function used for changing content of the popup
 void errorPopUp::changeText(QString txt){
     ui->label->setText(txt);
 }
